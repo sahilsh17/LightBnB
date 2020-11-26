@@ -16,7 +16,6 @@ const pool = new Pool({
  * @return {Promise<{}>} A promise to the user.
  */
 const getUserWithEmail = function(email) {
-  console.log(email);
   return pool.query(`SELECT * from users WHERE email = $1`,[email])
   .then(res =>{
     if(res.rows.length === 0) {
@@ -68,7 +67,10 @@ exports.addUser = addUser;
  * @return {Promise<[{}]>} A promise to the reservations.
  */
 const getAllReservations = function(guest_id, limit = 10) {
-  return getAllProperties(null, 2);
+  return pool.query(`SELECT *
+       FROM reservations
+       WHERE reservations.guest_id = $1 LIMIT $2`,[guest_id, limit])
+       .then(res =>  res.rows);
 }
 exports.getAllReservations = getAllReservations;
 
